@@ -53,7 +53,7 @@ const blogArticles = [
     },
     {
         title: "7 Actionable Strategies to Immediately Reduce Blue Light Exposure",
-        content: "Managing blue light exposure is crucial for your eyes and sleep. The good news is that the most effective strategies are simple, free, and can be implemented right away.\n\n1. Embrace the 20-20-20 Rule Religiously: This is the cornerstone of healthy screen habits. Every 20 minutes, look at something 20 feet away for at least 20 seconds. This relaxes your eye's focusing muscles and helps you blink, preventing dryness and strain.\n\n2. Optimize Your Device Settings: Enable 'Night Mode' ('Night Shift') on all devices to automatically warm the screen color in the evening. Use 'Dark Mode' to reduce overall screen brightness and glare, especially in low-light environments.\n\n3. Create a 'Digital Sunset': This is the most powerful strategy for protecting sleep. Power down all blue-light-emitting devices (phones, tablets, laptops, TVs) at least 1-2 hours before your intended bedtime. This allows your body to produce melatonin naturally.\n\n4. Adjust Screen Brightness to Match Your Environment: A screen that's much brighter than your surroundings is a major source of eye strain. Manually adjust brightness throughout the day so your screen blends in with the ambient light.\n\n5. Optimize Your Home and Office Lighting: It's not just screens. Replace cool-white LED bulbs (4000K-6500K) with 'warm white' or 'soft white' LEDs (2700K-3000K), especially in bedrooms and living areas. Use dimmers to reduce light intensity in the evening.\n\n6. Maximize Natural Light Exposure During the Day: Get outside for at least 15-30 minutes of natural light, especially in the morning. This powerfully reinforces your body's internal clock (circadian rhythm), making it more resilient to artificial light at night.\n\n7. Consider Quality Blue Light Filtering Eyewear: While not a replacement for good habits, amber-tinted glasses can be an effective tool if you must use screens in the evening, as they block the specific wavelengths that most disrupt sleep.\n\nPersonalize Your Strategy with TestBlueLight.com: While these strategies are excellent, TestBlueLight.com can provide the personalized data to see how your digital habits are truly affecting your eyes. Get the insights you need to make the most impactful changes by visiting TestBlueLight.com today."
+        content: "Managing blue light exposure is crucial for your eyes and sleep. The good news is that the most effective strategies are simple, free, and can be implemented right away.\n\n1. Embrace the 20-20-20 Rule Religiously: This is the cornerstone of healthy screen habits. Every 20 minutes, look at something 20 feet away for at least 20 seconds. This relaxes your eye's focusing muscles and helps you blink, preventing dryness and strain. Set a timer to remind yourself.\n\n2. Optimize Your Device Settings: Enable 'Night Mode' ('Night Shift') on all devices to automatically warm the screen color in the evening. Use 'Dark Mode' to reduce overall screen brightness and glare, especially in low-light environments.\n\n3. Create a 'Digital Sunset': This is the most powerful strategy for protecting sleep. Power down all blue-light-emitting devices (phones, tablets, laptops, TVs) at least 1-2 hours before your intended bedtime. This allows your body to produce melatonin naturally.\n\n4. Adjust Screen Brightness to Match Your Environment: A screen that's much brighter than your surroundings is a major source of eye strain. Manually adjust brightness throughout the day so your screen blends in with the ambient light.\n\n5. Optimize Your Home and Office Lighting: It's not just screens. Replace cool-white LED bulbs (4000K-6500K) with 'warm white' or 'soft white' LEDs (2700K-3000K), especially in bedrooms and living areas. Use dimmers to reduce light intensity in the evening.\n\n6. Maximize Natural Light Exposure During the Day: Get outside for at least 15-30 minutes of natural light, especially in the morning. This powerfully reinforces your body's internal clock (circadian rhythm), making it more resilient to artificial light at night.\n\n7. Consider Quality Blue Light Filtering Eyewear: While not a replacement for good habits, amber-tinted glasses can be an effective tool if you must use screens in the evening, as they block the specific wavelengths that most disrupt sleep.\n\nPersonalize Your Strategy with TestBlueLight.com: While these strategies are excellent, TestBlueLight.com can provide the personalized data to see how your digital habits are truly affecting your eyes. Get the insights you need to make the most impactful changes by visiting TestBlueLight.com today."
     },
     {
         title: "Beyond Screens: 5 Hidden Sources of Blue Light in Your Environment",
@@ -88,6 +88,44 @@ function createElement(tag, properties = {}) {
     return element;
 }
 
+function showCopyToast() {
+    const existingToast = document.querySelector('.copy-toast');
+    if (existingToast) existingToast.remove();
+
+    const toast = createElement('div', {
+        className: 'copy-toast',
+        textContent: 'Link copied to clipboard!'
+    });
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.addEventListener('transitionend', () => toast.remove());
+    }, 2500);
+}
+
+function handleShare() {
+    const shareData = {
+        title: 'Blue Light Exposure Test',
+        text: 'I just took this test to assess my sensitivity to blue light and digital eye strain. You should try it!',
+        url: window.location.origin,
+    };
+
+    if (navigator.share) {
+        navigator.share(shareData).catch(error => console.log('Error sharing:', error));
+    } else {
+        navigator.clipboard.writeText(shareData.url).then(() => {
+            showCopyToast();
+        }).catch(err => {
+            console.error('Failed to copy link: ', err);
+            alert('Failed to copy link. Please copy it from the address bar.');
+        });
+    }
+}
+
+
 // --- RENDER FUNCTIONS ---
 
 function renderHeader() {
@@ -101,7 +139,7 @@ function renderHeader() {
         renderApp();
     };
 
-    const nav = createElement('nav');
+    const nav = createElement('nav', { style: 'display: flex; align-items: center; gap: 0.5rem;' });
     const blogButton = createElement('button', {
         className: 'nav-button',
         textContent: 'Read Articles',
@@ -112,7 +150,15 @@ function renderHeader() {
         }
     });
     
+    const shareButton = createElement('button', {
+        className: 'nav-button share-button',
+        title: 'Share this app',
+        onclick: handleShare,
+    });
+    shareButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+    
     nav.appendChild(blogButton);
+    nav.appendChild(shareButton);
     headerContent.appendChild(logo);
     headerContent.appendChild(nav);
     header.appendChild(headerContent);
@@ -824,6 +870,13 @@ function renderFinalAssessment(results) {
         recommendationsList.innerHTML += `<li><strong>Consider Blue Light Glasses:</strong> If you spend many hours on screens, glasses that filter blue light may help reduce strain and improve sleep patterns.<span class="detail-implication">Look for reputable brands that specify the percentage of blue light blocked.</span></li><li><strong>Consult a Professional:</strong> If symptoms of eye strain are persistent or severe, schedule an exam with an optometrist or ophthalmologist.<span class="detail-implication">They can rule out underlying conditions and provide personalized recommendations for your visual health.</span></li>`;
     }
     content.appendChild(recommendationsList);
+    
+    const shareAssessmentButton = createElement('button', {
+        className: 'primary-button share-assessment-button',
+        onclick: handleShare
+    });
+    shareAssessmentButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/></svg> <span>Share This Tool</span>`;
+    content.appendChild(shareAssessmentButton);
 
     content.appendChild(createElement('p', { className: 'final-disclaimer', textContent: 'Disclaimer: This test is not a substitute for professional medical advice. Consult an eye care specialist for a comprehensive evaluation.' }));
     section.appendChild(content);
